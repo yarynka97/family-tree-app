@@ -30,7 +30,7 @@ export default class SetTree extends React.Component {
         var tittle = !this.props.relative ? (<h2>SetTree form</h2>) : "";
 
         return (
-            <div className="set-tree-container">
+            <div className="set-tree-container member-component">
                 {tittle}
                 <p>Name: </p><input ref='userName' />
                 <p>Date of Birth: </p><input ref='birthDate' />

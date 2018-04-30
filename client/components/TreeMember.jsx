@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+require('../main.css');
 
 export default class TreeMember extends React.Component {
     render() {
@@ -10,7 +11,7 @@ export default class TreeMember extends React.Component {
                 hasBirthDate = birthDate ? birthDate : 'unknown',
                 hasDeathDate = deathDate ? deathDate : 'unknown';
             userData = (
-                <div className="tree-member-component">
+                <div className="member-component">
                     <p>Name: {this.props.member.name}</p>
                     <p>Birth Date: {hasBirthDate}</p>
                     <p>Death Date: {hasDeathDate}</p>

@@ -1,4 +1,6 @@
 ﻿import React from 'react';
+import Router from "react-router-dom";
+
 import TreeMember from '../components/TreeMember';
 
 export default class ShowTree extends React.Component {
@@ -11,9 +13,11 @@ export default class ShowTree extends React.Component {
     }
 
     handleClick = () => {
+        var userName = this.refs.userName.value;
+
         this.setState({
             user: {
-                name: this.refs.userName.value || ' ',
+                name: userName || ' ',
                 birthDate: "01.01.2000",
                 deathDate: "10.10.2018",
                 mother: {
