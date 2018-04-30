@@ -1,4 +1,4 @@
-var app = require('../server/server');
+var app = require('../server/index');
 
 var port = 8080;
 app.listen(port, function () {
