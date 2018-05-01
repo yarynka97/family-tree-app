@@ -3,6 +3,7 @@ var fs = require('fs');
 var express = require('express');
 
 var indexRoutes = require('./routes/index');
+var apiRoutes = require('./routes/apiRoutes');
 
 var app = express();
 
@@ -13,6 +14,7 @@ app.engine('html', function (path, options, callbacks) {
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
+app.use('/api', apiRoutes);
 app.use('*', indexRoutes);
 
 app.use(function (err, req, res, next) {
