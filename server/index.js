@@ -13,7 +13,7 @@ app.engine('html', function (path, options, callbacks) {
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-app.use('/', indexRoutes);
+app.use('*', indexRoutes);
 
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);

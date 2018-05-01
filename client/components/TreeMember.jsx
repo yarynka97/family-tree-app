@@ -15,8 +15,8 @@ export default class TreeMember extends React.Component {
                     <p>Name: {this.props.member.name}</p>
                     <p>Birth Date: {hasBirthDate}</p>
                     <p>Death Date: {hasDeathDate}</p>
-                    <p>Mother:  {hasMother}</p>
-                    <p>Father:  {hasFather}</p>
+                    <div>Mother: {hasMother}</div>
+                    <div>Father: {hasFather}</div>
                 </div>
             );
         }

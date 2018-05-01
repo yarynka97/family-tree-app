@@ -14,8 +14,8 @@ export default class App extends React.Component {
 
                     <Route exact path='/' component={SetTree} />
                     <Route path="/settree" component={SetTree} />
-                    <Route path="/showtree" component={ShowTree} />
-                    <Route path="/userstree/:id" component={ShowTree} />
+                    <Route exact path="/showtree" component={ShowTree} />
+                    <Route path="/showtree/:userName" component={ShowTree} />
                 </div>
             </Router>
         );
