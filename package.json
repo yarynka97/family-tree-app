@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack --mode development && node bin/www",
-    "server": "node bin/www",
+    "start": "webpack --mode development && nodemon bin/www",
+    "server": "nodemon bin/www",
     "build": "webpack --mode development"
   },
   "keywords": [],

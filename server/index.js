@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var express = require('express');
+var cors = require('cors');
 
 var indexRoutes = require('./routes/index');
 var apiRoutes = require('./routes/apiRoutes');
@@ -12,6 +13,7 @@ app.engine('html', function (path, options, callbacks) {
   fs.readFile(path, 'utf-8', callback);
 });
 
+app.use(cors({ origin: '*' }));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 app.use('/api', apiRoutes);
