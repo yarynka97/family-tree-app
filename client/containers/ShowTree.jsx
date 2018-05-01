@@ -13,10 +13,12 @@ export default class ShowTree extends React.Component {
     }
 
     componentWillMount = () => {
+        console.log(`mount ${this.props.match.params.userName}`);
         this.findTree(this.props.match.params.userName);
     }
 
     componentWillReceiveProps = (nextProps) => {
+        console.log(`recProps ${nextProps.match.params.userName}`);
         this.findTree(nextProps.match.params.userName);
     }
 
