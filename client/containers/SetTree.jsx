@@ -2,69 +2,84 @@
 import axios from 'axios';
 require('./setTreeContainer.css');
 
+import NewMember from './NewMember';
+
 export default class SetTree extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            status:'',
-            motherField: (<button name="mother" onClick={this.addNewMember}>Add Mother</button>),
-            fatherField: (<button name="father" onClick={this.addNewMember}>Add Father</button>)
+            allowed: false,
+            status: ''
         }
     }
 
-    addNewMember = (e) => {
-        e.target.name == 'mother' ?
-            this.setState({
-                motherField: (<SetTree relative={true} />) }) :
-            this.setState({
-                fatherField: (<SetTree relative={true} />) });
-    };
+    collectData = (memberId) => {
+        this.setState({ allowed: true });
+        const self = this;
+
+        const memberContainer = document.getElementById(memberId).children,
+            memberMomId = memberId + '1',
+            memberDadId = memberId + '2';
+        var member = {};
+
+        Array.prototype.map.call(memberContainer, el => {
+            if (el.id) {
+                switch (el.id) {
+                    case memberMomId:
+                        console.log(`${memberId}1`);
+                        member['mother'] = self.collectData(`${memberId}1`);
+                        break;
+                    case memberDadId:
+                        console.log(`${memberId}2`);
+                        member['father'] = self.collectData(`${memberId}2`);
+                        break;
+                    case 'name':
+                        el.value === '' ?
+                            self.handleStatusChange('Enter Name') :
+                            member[el.id] = el.value;
+                        break;
+                    default:
+                        if (el.value != '') { member[el.id] = el.value; }
+                        break;
+                }
+                
+            }
+        });
+
+        return member;
+    }
 
     handleSendDataClick = () => {
-        var self = this;
-        var userName = this.refs.userName.value;
-        axios.post('/api/addTree', {
-            name: userName,
-            birthDate: "01.01.2000",
-            deathDate: "10.10.2018",
-            mother: {
-                name: "mr. Someones Mom",
-                birthDate: "01.01.1978",
-                deathDate: "10.10.2002"
-            },
-            father: {
-                name: "mr. Someones Dad",
-                birthDate: "01.01.1970",
-                deathDate: "10.10.1999"
-            }
-        })
+        const user = this.collectData("user");
+        const self = this;
+        if (this.state.allowed) {
+            axios.post('/api/addTree', user)
             .then(function (response) {
                 console.log(response);
-                self.setState({ status: `${userName}'s tree added` });
+                self.handleStatusChange(`${user.name}'s tree added`);
             })
             .catch(function (error) {
-                console.log(error.response.data);
-                self.setState({ status: error.response.data });
+                self.handleStatusChange(error.response.data);
             });
+        }
 
-        console.log('clicked');
     };
 
-    render() {
-        var button = !this.props.relative ? (<button onClick={this.handleSendDataClick}>Save</button>) : "";
-        var tittle = !this.props.relative ? (<h2>SetTree form</h2>) : "";
+    handleStatusChange = (message) => {
+        this.setState({
+            status: message,
+            allowed: false
+        });
+    }
 
+    render() {
         return (
             <div className="set-tree-container member-component">
-                {tittle}
+                <h2>SetTree form</h2>
                 <h3>{this.state.status}</h3>
-                <p>Name: </p><input ref='userName' />
-                <p>Date of Birth: </p><input ref='birthDate' />
-                <p>Date of Death: </p><input ref='deathDate' />
-                <p>Mother: </p>  {this.state.motherField}
-                <p>Father: </p> {this.state.fatherField}
-                <br />{button}<br />
+                <NewMember member={"user"} />
+                <br /><button onClick={this.handleSendDataClick}>Save</button><br />
                 <p>{this.state.status}</p>
             </div>
         );
