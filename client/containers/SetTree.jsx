@@ -7,6 +7,7 @@ export default class SetTree extends React.Component {
         super(props);
 
         this.state = {
+            status:'',
             motherField: (<button name="mother" onClick={this.addNewMember}>Add Mother</button>),
             fatherField: (<button name="father" onClick={this.addNewMember}>Add Father</button>)
         }
@@ -21,6 +22,7 @@ export default class SetTree extends React.Component {
     };
 
     handleSendDataClick = () => {
+        var self = this;
         var userName = this.refs.userName.value;
         axios.post('/api/addTree', {
             name: userName,
@@ -39,9 +41,11 @@ export default class SetTree extends React.Component {
         })
             .then(function (response) {
                 console.log(response);
+                self.setState({ status: `${userName}'s tree added` });
             })
             .catch(function (error) {
-                console.log(error);
+                console.log(error.response.data);
+                self.setState({ status: error.response.data });
             });
 
         console.log('clicked');
@@ -54,12 +58,14 @@ export default class SetTree extends React.Component {
         return (
             <div className="set-tree-container member-component">
                 {tittle}
+                <h3>{this.state.status}</h3>
                 <p>Name: </p><input ref='userName' />
                 <p>Date of Birth: </p><input ref='birthDate' />
                 <p>Date of Death: </p><input ref='deathDate' />
                 <p>Mother: </p>  {this.state.motherField}
                 <p>Father: </p> {this.state.fatherField}
-                <br />{button}
+                <br />{button}<br />
+                <p>{this.state.status}</p>
             </div>
         );
     }
