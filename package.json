@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack --mode development && node bin/www",
-    "server": "node bin/www",
+    "server": "nodemon bin/www",
     "build": "webpack --mode development"
   },
   "keywords": [],
@@ -29,6 +29,7 @@
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "mongodb": "^3.0.7",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2"

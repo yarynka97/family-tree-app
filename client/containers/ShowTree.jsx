@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import Router from "react-router-dom";
+import axios from 'axios';
 
 import TreeMember from '../components/TreeMember';
 
@@ -8,41 +9,45 @@ export default class ShowTree extends React.Component {
         super(props);
 
         this.state = {
+            notification:'Enter username to find his/her tree',
             user: {}
         }
     }
 
     componentWillMount = () => {
-        console.log(`mount ${this.props.match.params.userName}`);
-        this.findTree(this.props.match.params.userName);
+        var userName = this.props.match.params.userName;
+        console.log(`mount ${userName}`);
+        this.findTree(userName);
     }
 
     componentWillReceiveProps = (nextProps) => {
-        console.log(`recProps ${nextProps.match.params.userName}`);
-        this.findTree(nextProps.match.params.userName);
+        var userName = nextProps.match.params.userName;
+        console.log(`recProps ${userName}`);
+        this.findTree(userName);
     }
 
     findTree = (userName) => {
-        console.log(userName);
+        var self = this;
         if (userName) {
-            this.setState({
-                user: {
-                    name: userName || ' ',
-                    birthDate: "01.01.2000",
-                    deathDate: "10.10.2018",
-                    mother: {
-                        name: "mr. Someones Mom",
-                        birthDate: "01.01.1978",
-                        deathDate: "10.10.2002"
-                    },
-                    father: {
-                        name: "mr. Someones Dad",
-                        birthDate: "01.01.1970",
-                        deathDate: "10.10.1999"
-                    }
-                }
-            });
-        };
+            axios.get(`/api/getTree/${userName}`)
+                .then(function (response) {
+                    var user = response.data[0];
+                    console.log(user);
+                    user ?
+                        self.setState({
+                            notification: `${user.name}'s Tree:`,
+                            user
+                        }) :
+                        self.setState({
+                            notification: "No such user",
+                            user: {}
+                        });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+        console.log(userName);
     }
 
     handleClick = () => {
@@ -56,6 +61,7 @@ export default class ShowTree extends React.Component {
                 <h2>This is tree component</h2>
                 <label>UserName input: </label><input ref="userName" />
                 <button onClick={this.handleClick}>Show</button>
+                <p>{this.state.notification}</p>
                 <TreeMember member={this.state.user} />
             </div>
         );

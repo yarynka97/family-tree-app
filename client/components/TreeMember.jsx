@@ -3,7 +3,7 @@ require('../main.css');
 
 export default class TreeMember extends React.Component {
     render() {
-        let userData = (<p>Enter username to get his/her family tree</p>);
+        let userData = (<p>No tree</p>);
         if (this.props.member.name) {
             const { mother, father, birthDate, deathDate } = this.props.member;
             const hasMother = mother ? (<TreeMember member={mother} />) : (<span>No Data</span>),
