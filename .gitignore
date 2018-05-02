@@ -1,4 +1,4 @@
 ﻿node_modules/**
 **/dist/bundle.js
 **/config.js
-**/dist/index.html
+**/client/dist/index.html
