@@ -15,7 +15,7 @@ export default class SetTree extends React.Component {
     }
 
     collectData = (memberId) => {
-        this.setState({ allowed: true });
+        this.state.allowed = true;
         const self = this;
 
         const memberContainer = document.getElementById(memberId).children,
@@ -27,11 +27,9 @@ export default class SetTree extends React.Component {
             if (el.id) {
                 switch (el.id) {
                     case memberMomId:
-                        console.log(`${memberId}1`);
                         member['mother'] = self.collectData(`${memberId}1`);
                         break;
                     case memberDadId:
-                        console.log(`${memberId}2`);
                         member['father'] = self.collectData(`${memberId}2`);
                         break;
                     case 'name':
@@ -40,19 +38,24 @@ export default class SetTree extends React.Component {
                             member[el.id] = el.value;
                         break;
                     default:
-                        if (el.value != '') { member[el.id] = el.value; }
+                        member[el.id] = el.value == '' ?
+                            'unknown' :
+                            el.value; 
                         break;
                 }
                 
             }
         });
 
+        console.log(member);
         return member;
     }
 
     handleSendDataClick = () => {
+        this.handleStatusChange('Loading...', true);
         const user = this.collectData("user");
         const self = this;
+        console.log(this.state.allowed);
         if (this.state.allowed) {
             axios.post('/api/addTree', user)
             .then(function (response) {
@@ -66,10 +69,10 @@ export default class SetTree extends React.Component {
 
     };
 
-    handleStatusChange = (message) => {
+    handleStatusChange = (message, allowed=false) => {
         this.setState({
             status: message,
-            allowed: false
+            allowed
         });
     }
 
@@ -79,7 +82,7 @@ export default class SetTree extends React.Component {
                 <h2>SetTree form</h2>
                 <h3>{this.state.status}</h3>
                 <NewMember member={"user"} />
-                <br /><button onClick={this.handleSendDataClick}>Save</button><br />
+                <br /><button onClick={this.handleSendDataClick} disabled={this.state.allowed}>Save</button><br />
                 <p>{this.state.status}</p>
             </div>
         );
