@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import axios from 'axios';
 require('./setTreeContainer.css');
 
 export default class SetTree extends React.Component {
@@ -20,7 +21,28 @@ export default class SetTree extends React.Component {
     };
 
     handleSendDataClick = () => {
-
+        var userName = this.refs.userName.value;
+        axios.post('/api/addTree', {
+            name: userName,
+            birthDate: "01.01.2000",
+            deathDate: "10.10.2018",
+            mother: {
+                name: "mr. Someones Mom",
+                birthDate: "01.01.1978",
+                deathDate: "10.10.2002"
+            },
+            father: {
+                name: "mr. Someones Dad",
+                birthDate: "01.01.1970",
+                deathDate: "10.10.1999"
+            }
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
         console.log('clicked');
     };
