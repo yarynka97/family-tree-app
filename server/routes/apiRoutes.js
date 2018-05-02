@@ -6,7 +6,7 @@ const config = require('../../config');
 var treeCollection;
 var connected = false;
 
-MongoClient.connect(`mongodb://${config.db.user}:${config.db.psw}@ds111410.mlab.com:11410/family-tree-app`, (err, client) => {
+MongoClient.connect(config.db_url, (err, client) => {
     if (err) return console.log(err)
     treeCollection = client.db('family-tree-app').collection('trees');
     connected = true;
