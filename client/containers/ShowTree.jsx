@@ -31,11 +31,11 @@ export default class ShowTree extends React.Component {
         if (userName) {
             axios.get(`/api/getTree/${userName}`)
                 .then(function (response) {
-                    var user = response.data[0];
+                    var user = response.data;
                     console.log(user);
                     user ?
                         self.setState({
-                            notification: `${user.name}'s Tree:`,
+                            notification: `${userName}'s Tree:`,
                             user
                         }) :
                         self.setState({
@@ -50,18 +50,27 @@ export default class ShowTree extends React.Component {
         console.log(userName);
     }
 
-    handleClick = () => {
-        var userName = this.refs.userName.value;
-        this.props.history.push(`/showtree/${userName}`);
+    deleteTree = () => {
+        var self = this;
+        axios.delete(`/api/deleteTree/${this.props.match.params.userName}`)
+            .then(function (response) {
+                self.setState({
+                    notification: `Tree deleted`,
+                    user: {}
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     render() {
         return (
             <div className="show-tree-container">
                 <h2>This is tree component</h2>
-                <label>UserName input: </label><input ref="userName" />
-                <button onClick={this.handleClick}>Show</button>
-                <p>{this.state.notification}</p>
+                <p>{this.state.notification}  </p>
+                <button onClick={this.updateTree}>Update Tree</button>
+                <button onClick={this.deleteTree}>Delete Tree</button>
                 <TreeMember member={this.state.user} />
             </div>
         );

@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-require('./setTreeContainer.css');
+require('./NewMember.css');
 
 export default class NewMember extends React.Component {
     constructor(props) {
@@ -23,11 +23,19 @@ export default class NewMember extends React.Component {
     };
 
     render() {
+        var loginFields = this.props.member == "user" ?
+            (<div id="login-info">
+                <p>Login: </p> <input id='login' />
+                <p>Password: </p> <input type="password" id='password' />
+            </div>) :
+            "";
         return (
             <div id={this.props.member} className="member-component">
+                {loginFields}
                 <p>Name: </p><input id='name' />
-                <p>Date of Birth: </p><input id='birthDate' />
-                <p>Date of Death: </p><input id='deathDate' />
+                <p>Surname: </p><input id='surname' />
+                <p>Date of Birth: </p><input type="date" id='birthDate' />
+                <p>Date of Death: </p><input type="date" id='deathDate' />
                 <p>Mother: </p>  {this.state.motherField}
                 <p>Father: </p> {this.state.fatherField}
             </div>

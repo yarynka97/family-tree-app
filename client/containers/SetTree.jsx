@@ -1,8 +1,6 @@
 ﻿import React from 'react';
 import axios from 'axios';
-require('./setTreeContainer.css');
-
-import NewMember from './NewMember';
+import NewMember from '../components/NewMember';
 
 export default class SetTree extends React.Component {
     constructor(props) {
@@ -32,10 +30,13 @@ export default class SetTree extends React.Component {
                     case memberDadId:
                         member['father'] = self.collectData(`${memberId}2`);
                         break;
-                    case 'name':
-                        el.value === '' ?
-                            self.handleStatusChange('Enter Name') :
-                            member[el.id] = el.value;
+                    case 'login-info':
+                        if (el.children[1].value === '' || el.children[3].value === '') {
+                            self.handleStatusChange('Login and password are required')
+                        } else {
+                            member['login'] = el.children[1].value;
+                            member['password'] = el.children[3].value;
+                        }
                         break;
                     default:
                         member[el.id] = el.value == '' ?
@@ -78,7 +79,7 @@ export default class SetTree extends React.Component {
 
     render() {
         return (
-            <div className="set-tree-container member-component">
+            <div className="">
                 <h2>SetTree form</h2>
                 <h3>{this.state.status}</h3>
                 <NewMember member={"user"} />

@@ -13,11 +13,32 @@ MongoClient.connect(config.db_url, (err, client) => {
     console.log('Connected to DB');
 })
 
-router.get('/getTree/:userName', function (req, res) {
+router.get('/getTree/:login', function (req, res) {
     if (connected) {
-        treeCollection.find({ name: req.params.userName }).toArray(function (err, result) {
-            console.log(result);
-            res.send(result);
+        treeCollection.findOne({
+            login: req.params.login
+        } , function(err, result) {
+                console.log(result.tree);
+                res.send(result.tree);
+        });
+    } else {
+        console.log("no db connection");
+    }
+});
+
+router.post('/login', function (req, res) {
+    if (connected) {
+        var login = req.body.login;
+        var psw = req.body.psw;
+        treeCollection.findOne({ login: login }, function (err, result) {
+            if (result.password === psw) {
+                console.log(result);
+                res.send("Success");
+            } else {
+                console.log("Wrong password");
+                res.status(405).send("Wrong password");
+            }
+
         });
     } else {
         console.log("no db connection");
@@ -26,8 +47,8 @@ router.get('/getTree/:userName', function (req, res) {
 
 router.post('/addTree', (req, res) => {
     if (connected) {
-        console.log(req.body.name);
-        treeCollection.find({ name: req.body.name }).toArray(function (err, result) {
+        console.log(req.body.login);
+        treeCollection.find({ login: req.body.login }).toArray(function (err, result) {
             console.log(result);
             if (result[0]) {
                 res.status(405).send("User already exist");
@@ -46,8 +67,31 @@ router.post('/addTree', (req, res) => {
     } else {
         console.log("no db connection");
     }
+});
 
 
+router.put('/updateTree/:userName', (req, res) => {
+    treeCollection.findOneAndUpdate({ login: req.params.userName }, {
+        $set: {
+            tree: req.body.newTree
+        }
+    }, { upsert: false }, (err, result) => {
+        if (err) return res.send(err)
+        console.log(result);
+        res.send(result)
+    });
+});
+
+router.delete('/deleteTree/:userName', (req, res) => {
+    treeCollection.findOneAndUpdate({ login: req.params.userName }, {
+        $set: {
+            tree: {}
+        }
+    }, { upsert: false }, (err, result) => {
+        if (err) return res.send(err)
+        console.log(result);
+        res.send(result)
+    });
 });
 
 router.get('*', function (req, res) {
