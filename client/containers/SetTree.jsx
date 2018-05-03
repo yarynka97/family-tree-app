@@ -12,8 +12,7 @@ export default class SetTree extends React.Component {
         }
     }
 
-    collectData = (memberId) => {
-        this.state.allowed = true;
+    collectTreeData = (memberId) => {
         const self = this;
 
         const memberContainer = document.getElementById(memberId).children,
@@ -25,38 +24,48 @@ export default class SetTree extends React.Component {
             if (el.id) {
                 switch (el.id) {
                     case memberMomId:
-                        member['mother'] = self.collectData(`${memberId}1`);
+                        member['mother'] = self.collectTreeData(`${memberId}1`);
                         break;
                     case memberDadId:
-                        member['father'] = self.collectData(`${memberId}2`);
-                        break;
-                    case 'login-info':
-                        if (el.children[1].value === '' || el.children[3].value === '') {
-                            self.handleStatusChange('Login and password are required')
-                        } else {
-                            member['login'] = el.children[1].value;
-                            member['password'] = el.children[3].value;
-                        }
+                        member['father'] = self.collectTreeData(`${memberId}2`);
                         break;
                     default:
                         member[el.id] = el.value == '' ?
                             'unknown' :
-                            el.value; 
+                            el.value;
                         break;
                 }
-                
+
             }
         });
 
-        console.log(member);
         return member;
+    }
+
+    collectData = () => {
+        this.state.allowed = true;
+        var login = document.getElementById("login").value;
+        var password = document.getElementById("password").value;
+
+        console.log(login + '  ' + password);
+
+        if (login === '' || password === '') {
+            handleStatusChange('login and password are required');
+        }
+
+        return {
+            login,
+            password,
+            tree: this.collectTreeData("user")
+        };        
     }
 
     handleSendDataClick = () => {
         this.handleStatusChange('Loading...', true);
-        const user = this.collectData("user");
+        const user = this.collectData();
+        console.log(user);
         const self = this;
-        console.log(this.state.allowed);
+
         if (this.state.allowed) {
             axios.post('/api/addTree', user)
             .then(function (response) {
@@ -64,7 +73,7 @@ export default class SetTree extends React.Component {
                 self.handleStatusChange(`${user.name}'s tree added`);
             })
             .catch(function (error) {
-                self.handleStatusChange(error.response.data);
+                self.handleStatusChange(error.response);
             });
         }
 
@@ -79,10 +88,12 @@ export default class SetTree extends React.Component {
 
     render() {
         return (
-            <div className="">
+            <div className="member-component">
                 <h2>SetTree form</h2>
                 <h3>{this.state.status}</h3>
-                <NewMember member={"user"} />
+                <p>Login: </p> <input id='login' />
+                <p>Password: </p> <input type="password" id='password' />
+                <NewMember member="user" />
                 <br /><button onClick={this.handleSendDataClick} disabled={this.state.allowed}>Save</button><br />
                 <p>{this.state.status}</p>
             </div>

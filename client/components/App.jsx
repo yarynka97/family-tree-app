@@ -15,7 +15,7 @@ export default class App extends React.Component {
 
                     <Route exact path='/' component={LoginForm} />
                     <Route path="/settree" component={SetTree} />
-                    <Route path="/:userName" component={ShowTree} />
+                    <Route path="/user/:userName" component={ShowTree} />
                 </div>
             </Router>
         );

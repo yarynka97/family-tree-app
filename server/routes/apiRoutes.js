@@ -48,9 +48,9 @@ router.post('/login', function (req, res) {
 router.post('/addTree', (req, res) => {
     if (connected) {
         console.log(req.body.login);
-        treeCollection.find({ login: req.body.login }).toArray(function (err, result) {
+        treeCollection.findOne({ login: req.body.login }, function (err, result) {
             console.log(result);
-            if (result[0]) {
+            if (result) {
                 res.status(405).send("User already exist");
             } else {
                 treeCollection.save(req.body, (err, result) => {
@@ -73,7 +73,7 @@ router.post('/addTree', (req, res) => {
 router.put('/updateTree/:userName', (req, res) => {
     treeCollection.findOneAndUpdate({ login: req.params.userName }, {
         $set: {
-            tree: req.body.newTree
+            tree: req.body
         }
     }, { upsert: false }, (err, result) => {
         if (err) return res.send(err)

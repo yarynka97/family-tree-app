@@ -23,15 +23,8 @@ export default class NewMember extends React.Component {
     };
 
     render() {
-        var loginFields = this.props.member == "user" ?
-            (<div id="login-info">
-                <p>Login: </p> <input id='login' />
-                <p>Password: </p> <input type="password" id='password' />
-            </div>) :
-            "";
         return (
             <div id={this.props.member} className="member-component">
-                {loginFields}
                 <p>Name: </p><input id='name' />
                 <p>Surname: </p><input id='surname' />
                 <p>Date of Birth: </p><input type="date" id='birthDate' />
