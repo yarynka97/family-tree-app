@@ -13,6 +13,7 @@ export default class TreeMember extends React.Component {
             userData = (
                 <div className="member-component">
                     <p>Name: {this.props.member.name}</p>
+                    <p>Surname: {this.props.member.surname}</p>
                     <p>Birth Date: {hasBirthDate}</p>
                     <p>Death Date: {hasDeathDate}</p>
                     <div>Mother: {hasMother}</div>
