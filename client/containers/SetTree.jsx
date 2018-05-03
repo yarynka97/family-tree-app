@@ -1,70 +1,100 @@
 ﻿import React from 'react';
 import axios from 'axios';
-require('./setTreeContainer.css');
+import NewMember from '../components/NewMember';
 
 export default class SetTree extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            status:'',
-            motherField: (<button name="mother" onClick={this.addNewMember}>Add Mother</button>),
-            fatherField: (<button name="father" onClick={this.addNewMember}>Add Father</button>)
+            allowed: false,
+            status: ''
         }
     }
 
-    addNewMember = (e) => {
-        e.target.name == 'mother' ?
-            this.setState({
-                motherField: (<SetTree relative={true} />) }) :
-            this.setState({
-                fatherField: (<SetTree relative={true} />) });
-    };
+    collectTreeData = (memberId) => {
+        const self = this;
+
+        const memberContainer = document.getElementById(memberId).children,
+            memberMomId = memberId + '1',
+            memberDadId = memberId + '2';
+        var member = {};
+
+        Array.prototype.map.call(memberContainer, el => {
+            if (el.id) {
+                switch (el.id) {
+                    case memberMomId:
+                        member['mother'] = self.collectTreeData(`${memberId}1`);
+                        break;
+                    case memberDadId:
+                        member['father'] = self.collectTreeData(`${memberId}2`);
+                        break;
+                    default:
+                        member[el.id] = el.value == '' ?
+                            'unknown' :
+                            el.value;
+                        break;
+                }
+
+            }
+        });
+
+        return member;
+    }
+
+    collectData = () => {
+        this.state.allowed = true;
+        var login = document.getElementById("login").value;
+        var password = document.getElementById("password").value;
+
+        console.log(login + '  ' + password);
+
+        if (login === '' || password === '') {
+            handleStatusChange('login and password are required');
+        }
+
+        return {
+            login,
+            password,
+            tree: this.collectTreeData("user")
+        };        
+    }
 
     handleSendDataClick = () => {
-        var self = this;
-        var userName = this.refs.userName.value;
-        axios.post('/api/addTree', {
-            name: userName,
-            birthDate: "01.01.2000",
-            deathDate: "10.10.2018",
-            mother: {
-                name: "mr. Someones Mom",
-                birthDate: "01.01.1978",
-                deathDate: "10.10.2002"
-            },
-            father: {
-                name: "mr. Someones Dad",
-                birthDate: "01.01.1970",
-                deathDate: "10.10.1999"
-            }
-        })
+        this.handleStatusChange('Loading...', true);
+        const user = this.collectData();
+        console.log(user);
+        const self = this;
+
+        if (this.state.allowed) {
+            axios.post('/api/addTree', user)
             .then(function (response) {
                 console.log(response);
-                self.setState({ status: `${userName}'s tree added` });
+                self.handleStatusChange(`${user.name}'s tree added`);
             })
             .catch(function (error) {
-                console.log(error.response.data);
-                self.setState({ status: error.response.data });
+                self.handleStatusChange(error.response);
             });
+        }
 
-        console.log('clicked');
     };
 
-    render() {
-        var button = !this.props.relative ? (<button onClick={this.handleSendDataClick}>Save</button>) : "";
-        var tittle = !this.props.relative ? (<h2>SetTree form</h2>) : "";
+    handleStatusChange = (message, allowed=false) => {
+        this.setState({
+            status: message,
+            allowed
+        });
+    }
 
+    render() {
         return (
-            <div className="set-tree-container member-component">
-                {tittle}
+            <div className="member-component">
+                <h2>SetTree form</h2>
                 <h3>{this.state.status}</h3>
-                <p>Name: </p><input ref='userName' />
-                <p>Date of Birth: </p><input ref='birthDate' />
-                <p>Date of Death: </p><input ref='deathDate' />
-                <p>Mother: </p>  {this.state.motherField}
-                <p>Father: </p> {this.state.fatherField}
-                <br />{button}<br />
+                <p>Login: </p> <input id='login' />
+                <p>Password: </p> <input type="password" id='password' />
+                <NewMember member="user" />
+                <br /><button onClick={this.handleSendDataClick} disabled={this.state.allowed}>Save</button><br />
                 <p>{this.state.status}</p>
             </div>
         );
