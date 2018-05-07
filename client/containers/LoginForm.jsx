@@ -9,21 +9,10 @@ export default class LoginForm extends React.Component {
         super(props);
 
         this.state = {
-            motherField: (<button name="mother" onClick={this.addNewMember}>Add Mother</button>),
-            fatherField: (<button name="father" onClick={this.addNewMember}>Add Father</button>)
+            notification: 'Enter username to find his/her tree',
+            user: {}
         }
     }
-
-    addNewMember = (e) => {
-        var self = this;
-        e.target.name == 'mother' ?
-            this.setState({
-                motherField: (<NewMember member={`${self.props.member}1`} />)
-            }) :
-            this.setState({
-                fatherField: (<NewMember member={`${self.props.member}2`} />)
-            });
-    };
 
     handleClick = () => {
         var login = this.refs.login.value;
@@ -39,8 +28,10 @@ export default class LoginForm extends React.Component {
                     self.props.history.push(`/user/${login}`);
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    self.setState({ notification: error.response.data });
                 });
+        } else {
+            self.setState({ notification: "Login and password are required" });
         }
     }
 
