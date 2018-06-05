@@ -47,9 +47,10 @@ export default class SetTree extends React.Component {
         var login = document.getElementById("login").value;
         var password = document.getElementById("password").value;
 
+        console.log(login + '  ' + password);
+
         if (login === '' || password === '') {
-            this.handleStatusChange('Login and password are required');
-            this.state.allowed = false;
+            handleStatusChange('login and password are required');
         }
 
         return {
@@ -62,15 +63,17 @@ export default class SetTree extends React.Component {
     handleSendDataClick = () => {
         this.handleStatusChange('Loading...', true);
         const user = this.collectData();
+        console.log(user);
         const self = this;
 
         if (this.state.allowed) {
             axios.post('/api/addTree', user)
             .then(function (response) {
-                self.handleStatusChange(`${user.login}'s tree added`);
+                console.log(response);
+                self.handleStatusChange(`${user.name}'s tree added`);
             })
             .catch(function (error) {
-                self.handleStatusChange(error.response.data);
+                self.handleStatusChange(error.response);
             });
         }
 

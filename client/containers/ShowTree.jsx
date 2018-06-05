@@ -35,6 +35,7 @@ export default class ShowTree extends React.Component {
             axios.get(`/api/getTree/${userName}`)
                 .then(function (response) {
                     var user = response.data;
+                    console.log(user);
                     user ?
                         self.setState({
                             notification: `${userName}'s Tree:`,
@@ -46,10 +47,7 @@ export default class ShowTree extends React.Component {
                         });
                 })
                 .catch(function (error) {
-                    self.setState({
-                        notification: error.response.data,
-                        user: {}
-                    });
+                    console.log(error);
                 });
         }
         console.log(userName);
@@ -65,10 +63,7 @@ export default class ShowTree extends React.Component {
                 });
             })
             .catch(function (error) {
-                self.setState({
-                    notification: error.response.data,
-                    user: {}
-                });
+                console.log(error);
             });
     }
 
@@ -94,10 +89,7 @@ export default class ShowTree extends React.Component {
                     self.props.history.push(`/user/${self.props.match.params.userName}`);
                 })
                 .catch(function (error) {
-                    self.setState({
-                        notification: error.response.data,
-                        user: {}
-                    });
+                    console.log(error);
                 });
         }
 
