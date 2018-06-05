@@ -1,5 +1,4 @@
-﻿const MongoClient = require('mongodb').MongoClient;
-const path = require('path');
+const MongoClient = require('mongodb').MongoClient;
 const router = require('express').Router();
 const config = require('../../config');
 
@@ -13,7 +12,7 @@ MongoClient.connect(config.db_url, (err, client) => {
     console.log('Connected to DB');
 })
 
-router.get('/getTree/:login', function (req, res) {
+router.get('/:login', function (req, res) {
     if (connected) {
         treeCollection.findOne({
             login: req.params.login
@@ -26,7 +25,7 @@ router.get('/getTree/:login', function (req, res) {
     }
 });
 
-router.post('/login', function (req, res) {
+/*router.post('/login', function (req, res) {
     if (connected) {
         var login = req.body.login;
         var psw = req.body.psw;
@@ -43,7 +42,7 @@ router.post('/login', function (req, res) {
     } else {
         console.log("no db connection");
     }
-});
+});*/
 
 router.post('/addTree', (req, res) => {
     if (connected) {
