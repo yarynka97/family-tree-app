@@ -1,57 +1,57 @@
 ﻿import React from 'react';
-import Router from "react-router-dom";
+import { Router, Link } from "react-router-dom";
 import axios from 'axios';
-
-import ShowTree from './ShowTree';
+import cookie from 'react-cookies'
 
 export default class LoginForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            motherField: (<button name="mother" onClick={this.addNewMember}>Add Mother</button>),
-            fatherField: (<button name="father" onClick={this.addNewMember}>Add Father</button>)
+          notification: ''
         }
     }
 
-    addNewMember = (e) => {
-        var self = this;
-        e.target.name == 'mother' ?
-            this.setState({
-                motherField: (<NewMember member={`${self.props.member}1`} />)
-            }) :
-            this.setState({
-                fatherField: (<NewMember member={`${self.props.member}2`} />)
-            });
-    };
+    componentWillMount = () => {
+      axios.get('/api/logout').then(res=>{
+        cookie.save('token', res.data.token, { path: '/' });
+      })
+    }
 
     handleClick = () => {
-        var login = this.refs.login.value;
-        var psw = this.refs.psw.value;
+        var username = this.refs.login.value;
+        var password = this.refs.psw.value;
         var self = this;
 
-        if (login && psw) {
+        if (username && password) {
             axios.post(`/api/login`, {
-                login,
-                psw
+                username,
+                password
             })
-                .then(function (response) {
-                    self.props.history.push(`/user/${login}`);
+                .then(function (res) {
+                  cookie.save('token', res.data.token, { path: '/' })
+                  self.props.history.push(`/user/${username}`);
+                  self.setState({notification: ''});
                 })
-                .catch(function (error) {
-                    console.log(error);
+                .catch(function (err) {
+                    console.log(err);
                 });
+        } else {
+          this.setState({
+            notification: 'Username and password are required!'
+          })
         }
     }
 
     render() {
         return (
             <div className="login-container">
-                <h2>Log in to your account</h2>
-                <label>Login: </label><input ref="login" />
-                <label>Password: </label><input type="password" ref="psw" />
+                <h2>Login to your account</h2>
+                <label>Login: </label><input placeholder="Enter your username" ref="login" />
+                <label>Password: </label><input placeholder="Password" type="password" ref="psw" />
                 <button onClick={this.handleClick}>Login</button>
                 <p>{this.state.notification}</p>
+                <Link to='/signup'><button> Create New Account </button></Link>
             </div>
         );
     }
