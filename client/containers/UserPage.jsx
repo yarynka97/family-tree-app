@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Link } from "react-router-dom";
+import { Router, Link, Redirect} from "react-router-dom";
 import axios from 'axios';
 import cookie from 'react-cookies'
 
@@ -8,6 +8,7 @@ export default class LoginForm extends React.Component {
         super(props);
 
         this.state = {
+          isLogedin: true,
           notification: '',
           user: 'No user'
         }
@@ -31,7 +32,7 @@ export default class LoginForm extends React.Component {
                   self.setState({ user : response.data });
               })
               .catch(function (error) {
-                  console.log(error);
+                  self.setState({ isLogedin: false })
               });
             } else{
               this.setState({ notification: 'Token is not provided' });
@@ -41,11 +42,13 @@ export default class LoginForm extends React.Component {
 
     render() {
         return (
-            <div className="login-container">
+          this.state.isLogedin ?
+            (<div className="login-container">
               <Link to="/">Logout</Link>
               <p>Name: {this.state.user.firstName} {this.state.user.lastName}</p>
               <p>Trees: {this.state.user.trees || 'No trees yet'}</p>
-            </div>
+            </div>):
+            (<Redirect to ='/' />)
         );
     }
 }
