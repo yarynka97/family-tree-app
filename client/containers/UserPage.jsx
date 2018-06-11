@@ -25,18 +25,33 @@ export default class LoginForm extends React.Component {
     loadUser = (username) => {
       if (username) {
         var token = cookie.load('token'),
-        self=this;
+            self=this;
+
         if(token){
           axios.get(`/api/user/${username}`, { 'headers': { 'x-access-token': token } })
-              .then(function (response) {
-                  self.setState({ user : response.data });
+              .then(res => {
+                  self.setState({ user : res.data });
               })
-              .catch(function (error) {
+              .catch(err => {
                   self.setState({ isLogedin: false })
               });
             } else{
               this.setState({ notification: 'Token is not provided' });
             }
+      }
+    }
+
+    update = () =>{
+      var firstName = this.refs.name.value,
+          token = cookie.load('token'),
+          self = this;
+      if(token){
+        axios.put(`/api/user/${this.state.user.username}`, { firstName }, { 'headers': { 'x-access-token': token } })
+        .then(res=>{
+          self.setState({ user : res.data });
+        })
+      } else{
+        this.setState({ notification: 'Token is not provided' });
       }
     }
 
@@ -47,6 +62,8 @@ export default class LoginForm extends React.Component {
               <Link to="/">Logout</Link>
               <p>Name: {this.state.user.firstName} {this.state.user.lastName}</p>
               <p>Trees: {this.state.user.trees || 'No trees yet'}</p>
+              <input ref="name" placeholder={this.state.user.firstName} />
+              <button onClick={this.update}>update</button>
             </div>):
             (<Redirect to ='/' />)
         );

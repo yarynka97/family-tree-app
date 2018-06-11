@@ -27,4 +27,8 @@ router.get('/logout', function(req, res) {
   res.status(200).send({ auth: false, token: null });
 });
 
+router.get('*', function (req, res) {
+    res.status(404).send('No such route');
+});
+
 module.exports = router;

@@ -22,9 +22,9 @@ app.engine('html', function (path, options, callbacks) {
 app.use(cors({ origin: '*' }));
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-app.use('/api/', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/tree', treeRoutes);
+app.use('/api/', authRoutes);
 app.use('*', indexRoutes);
 
 app.use(function (err, req, res, next) {
